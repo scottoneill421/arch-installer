@@ -1,0 +1,10 @@
+#!/bin/bash
+
+pkgs=("i3-gaps" "i3blocks" "i3lock" "i3status" "lightdm" "dmenu" "ranger" "kitty" "ttf-hack" "vim" "zsh")
+
+echo ${#pkgs[@]}
+
+for p in ${pkgs[@]}
+do
+	sudo pacman --noconfirm -S $p
+done
