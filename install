@@ -32,9 +32,10 @@ for p in ${pkgs[@]}
 do
 	
 	if [[ "${failedPkgs[@]}" =~ "$p" ]]; then
-		printf "%-15s %-10s\n" "$p" "[failure]"
+		printf "%-15s [\e[1;31m%-7s\e[0m]\n" "$p" "failure"
 	else
-		printf "%-15s %-10s\n" "$p" "[success]"
+		printf "%-15s [\e[1;32m%-7s\e[0m]\n" "$p" "success"
 	fi
 done
+
 
