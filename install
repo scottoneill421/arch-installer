@@ -6,6 +6,7 @@ pkgs=(
       "i3lock" 
       "i3status" 
       "lightdm" 
+      "lightdm-gtk-greeter"
       "dmenu" 
       "ranger" 
       "kitty" 
@@ -23,17 +24,17 @@ do
 	sudo pacman --noconfirm -S $p || failedPkgs+=($p)
 done
 
-printf "\n%-15s %-10s\n" "PACKAGE" "STATUS"
-printf "%-15s %-10s\n"   "=======" "========="
+printf "\n%-20s %-10s\n" "PACKAGE" "STATUS"
+printf "%-20s %-10s\n"   "=======" "========="
 
 for p in ${pkgs[@]}
 do
 	
 	if [[ "${failedPkgs[@]}" =~ "$p" ]]; then
-		printf "%-15s [\e[1;31m%-7s\e[0m]\n" "$p" "failure"
+		printf "%-20s [\e[1;31m%-7s\e[0m]\n" "$p" "failure"
 	else
-		printf "%-15s [\e[1;32m%-7s\e[0m]\n" "$p" "success"
+		printf "%-20s [\e[1;32m%-7s\e[0m]\n" "$p" "success"
 	fi
 done
 
-
+#exec sudo systemctl enable lightdm
