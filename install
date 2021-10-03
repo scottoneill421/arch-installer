@@ -1,10 +1,40 @@
 #!/bin/bash
 
-pkgs=("i3-gaps" "i3blocks" "i3lock" "i3status" "lightdm" "dmenu" "ranger" "kitty" "ttf-hack" "vim" "zsh")
+pkgs=(
+      "i3-gaps" 
+      "i3blocks" 
+      "i3lock" 
+      "i3status" 
+      "lightdm" 
+      "ssddssaa" 
+      "dmenu" 
+      "ranger" 
+      "eerree" 
+      "kitty" 
+      "ttf-hack" 
+      "vim" 
+      "tmux" 
+      "htop" 
+      "zsh"
+)
 
-echo ${#pkgs[@]}
+failedPkgs=()
 
 for p in ${pkgs[@]}
 do
-	sudo pacman --noconfirm -S $p
+	sudo pacman --noconfirm -S $p || failedPkgs+=($p)
 done
+
+printf "\n%-15s %-10s\n" "PACKAGE" "STATUS"
+printf "%-15s %-10s\n"   "=======" "========="
+
+for p in ${pkgs[@]}
+do
+	
+	if [[ "${failedPkgs[@]}" =~ "$p" ]]; then
+		printf "%-15s %-10s\n" "$p" "[failure]"
+	else
+		printf "%-15s %-10s\n" "$p" "[success]"
+	fi
+done
+
