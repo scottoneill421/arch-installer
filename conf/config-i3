@@ -46,7 +46,7 @@ bindsym $mod+Shift+q kill
 bindsym $mod+l exec i3lock
 
 # start rofi (a program launcher)
-bindsym $mod+d exec dmenu_run -l 15
+bindsym $mod+d exec dmenu_run -l 20
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
@@ -209,5 +209,4 @@ gaps outer 10
 for_window [class=".*"] border pixel 1 
 
 hide_edge_borders both
-exec_always feh --bg-scale /home/scott/pictures/bg.jpg
 exec_always compton -f

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+PACKAGES=("i3-gaps" "i3blocks" "i3lock")
+
+echo ${PACKAGES[@]}
+
+PACKAGES=(${PACKAGES[@]} "test")
+
+echo ${PACKAGES[@]}

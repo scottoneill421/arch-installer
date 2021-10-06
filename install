@@ -1,40 +1,67 @@
 #!/bin/bash
 
-pkgs=(
+PACKAGES=(
       "i3-gaps" 
       "i3blocks" 
       "i3lock" 
       "i3status" 
-      "lightdm" 
+      "lightdm"
       "lightdm-gtk-greeter"
+      "qutebrowser"
+      "feh"
+      "compton"
       "dmenu" 
       "ranger" 
       "kitty" 
-      "ttf-hack" 
+      "ttf-hack"
+      "mupdf"
       "vim" 
       "tmux" 
       "htop" 
       "zsh"
 )
 
-failedPkgs=()
+WORK_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
 
-for p in ${pkgs[@]}
+FAILED_PACKAGES=()
+
+for p in ${PACKAGES[@]}
 do
-	sudo pacman --noconfirm -S $p || failedPkgs+=($p)
+	pacman --noconfirm -S $p || FAILED_PACKAGES=(${FAILED_PACKAGES[@]} $p)
 done
 
 printf "\n%-20s %-10s\n" "PACKAGE" "STATUS"
 printf "%-20s %-10s\n"   "=======" "========="
 
-for p in ${pkgs[@]}
-do
-	
-	if [[ "${failedPkgs[@]}" =~ "$p" ]]; then
+for p in ${PACKAGES[@]}
+do	
+	if [[ " ${FAILED_PACKAGES[@]} " =~ " $p " ]]; then
 		printf "%-20s [\e[1;31m%-7s\e[0m]\n" "$p" "failure"
 	else
 		printf "%-20s [\e[1;32m%-7s\e[0m]\n" "$p" "success"
 	fi
 done
 
-#exec sudo systemctl enable lightdm
+systemctl enable lightdm
+
+echo "creating home directories"
+mkdir $USER_HOME/documents $USER_HOME/downloads $USER_HOME/pictures $USER_HOME/forks
+
+printf "\nBacking up original i3 config\n"
+mv $USER_HOME/.config/i3/config $USER_HOME/.config/i3/config.backup
+
+printf "copying new i3 config\n\n"
+cp $WORK_DIR/conf/config-i3 $USER_HOME/.config/i3/config
+
+echo "backing up original kitty config"
+mv $USER_HOME/.config/kitty/kitty.conf $USER_HOME/.config/kitty/kitty.conf.backup
+
+printf "copying new kitty config\n\n"
+cp $WORK_DIR/conf/config-kitty $USER_HOME/.config/kitty/kitty.conf
+
+echo "configuring background"
+mv $WORK_DIR/images/bg.jpg $USER_HOME/pictures
+echo "exec_always feh --bg-scale $USER_HOME/pictures/bg.jpg" >> $USER_HOME/.config/i3/config
+
+
