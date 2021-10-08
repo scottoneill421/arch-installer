@@ -61,7 +61,8 @@ printf "copying new kitty config\n\n"
 cp $WORK_DIR/conf/config-kitty $USER_HOME/.config/kitty/kitty.conf
 
 echo "configuring background"
-mv $WORK_DIR/images/bg.jpg $USER_HOME/pictures
+cp $WORK_DIR/images/bg.jpg $USER_HOME/pictures
 echo "exec_always feh --bg-scale $USER_HOME/pictures/bg.jpg" >> $USER_HOME/.config/i3/config
 
-
+git clone https://github.com/scottoneill421/dmenu-fork.git $USER_HOME/forks/dmenu
+make -C $USER_HOME/forks/dmenu clean install
