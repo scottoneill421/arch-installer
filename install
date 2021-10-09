@@ -22,14 +22,14 @@ PACKAGES=(
       "zsh"
 )
 
-WORK_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
+WORKDIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+USERHOME=$(getent passwd $SUDO_USER | cut -d: -f6)
 
-FAILED_PACKAGES=()
+FAILEDPACKAGES=()
 
 for p in ${PACKAGES[@]}
 do
-	pacman --noconfirm -S $p || FAILED_PACKAGES=(${FAILED_PACKAGES[@]} $p)
+	pacman --noconfirm -S $p || FAILEDPACKAGES=(${FAILEDPACKAGES[@]} $p)
 done
 
 printf "\n%-20s %-10s\n" "PACKAGE" "STATUS"
@@ -37,7 +37,7 @@ printf "%-20s %-10s\n"   "=======" "========="
 
 for p in ${PACKAGES[@]}
 do	
-	if [[ " ${FAILED_PACKAGES[@]} " =~ " $p " ]]; then
+	if [[ " ${FAILEDPACKAGES[@]} " =~ " $p " ]]; then
 		printf "%-20s [\e[1;31m%-7s\e[0m]\n" "$p" "failure"
 	else
 		printf "%-20s [\e[1;32m%-7s\e[0m]\n" "$p" "success"
@@ -47,23 +47,25 @@ done
 systemctl enable lightdm
 
 echo "creating home directories"
-mkdir $USER_HOME/documents $USER_HOME/downloads $USER_HOME/pictures $USER_HOME/forks
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/documents
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/downloads
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/forks
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/pictures
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config
 
-printf "\nBacking up original i3 config\n"
-mv $USER_HOME/.config/i3/config $USER_HOME/.config/i3/config.backup
+echo "creating config directories"
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config/i3
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config/kitty
 
-printf "copying new i3 config\n\n"
-cp $WORK_DIR/conf/config-i3 $USER_HOME/.config/i3/config
+printf "\nBacking up original i3 config\n" && mv $USERHOME/.config/i3/config $USERHOME/.config/i3/config.backup
+printf "copying new i3 config\n\n" && cp $WORKDIR/conf/config-i3 $USERHOME/.config/i3/config
 
-echo "backing up original kitty config"
-mv $USER_HOME/.config/kitty/kitty.conf $USER_HOME/.config/kitty/kitty.conf.backup
-
-printf "copying new kitty config\n\n"
-cp $WORK_DIR/conf/config-kitty $USER_HOME/.config/kitty/kitty.conf
+echo "backing up original kitty config" && mv $USERHOME/.config/kitty/kitty.conf $USERHOME/.config/kitty/kitty.conf.backup
+printf "copying new kitty config\n\n" && cp $WORKDIR/conf/config-kitty $USERHOME/.config/kitty/kitty.conf
 
 echo "configuring background"
-cp $WORK_DIR/images/bg.jpg $USER_HOME/pictures
-echo "exec_always feh --bg-scale $USER_HOME/pictures/bg.jpg" >> $USER_HOME/.config/i3/config
+cp $WORKDIR/images/bg.jpg $USERHOME/pictures
+echo "exec_always feh --bg-scale $USERHOME/pictures/bg.jpg" >> $USERHOME/.config/i3/config
 
-git clone https://github.com/scottoneill421/dmenu-fork.git $USER_HOME/forks/dmenu
-make -C $USER_HOME/forks/dmenu clean install
+git clone https://github.com/scottoneill421/dmenu-fork.git $USERHOME/forks/dmenu
+make -C $USERHOME/forks/dmenu clean install
