@@ -56,12 +56,17 @@ install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config
 echo "creating config directories"
 install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config/i3
 install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config/kitty
+install -d -m 0744 -o $SUDO_USER -g $SUDO_USER $USERHOME/.config/i3blocks
 
-printf "\nBacking up original i3 config\n" && mv $USERHOME/.config/i3/config $USERHOME/.config/i3/config.backup
-printf "copying new i3 config\n\n" && cp $WORKDIR/conf/config-i3 $USERHOME/.config/i3/config
+printf "copying new i3 config\n\n"
+cp $WORKDIR/conf/config-i3 $USERHOME/.config/i3/config
 
-echo "backing up original kitty config" && mv $USERHOME/.config/kitty/kitty.conf $USERHOME/.config/kitty/kitty.conf.backup
-printf "copying new kitty config\n\n" && cp $WORKDIR/conf/config-kitty $USERHOME/.config/kitty/kitty.conf
+printf "copying new kitty config\n\n"
+cp $WORKDIR/conf/config-kitty $USERHOME/.config/kitty/kitty.conf
+
+printf "copying new i3blocks config\n\n"
+cp $WORKDIR/conf/config-i3blocks $USERHOME/.config/i3blocks/config
+cp $WORKDIR/conf/config-i3blocks-battery.sh $USERHOME/.config/i3blocks/battery.sh
 
 echo "configuring background"
 cp $WORKDIR/images/bg.jpg $USERHOME/pictures
